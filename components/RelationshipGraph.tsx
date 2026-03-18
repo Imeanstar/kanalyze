@@ -167,7 +167,7 @@ export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
           // Image avatar (Lazy loading SVG onto canvas)
           if (!node.img) {
             const img = new Image();
-            img.src = `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(node.id)}&backgroundColor=transparent`;
+            img.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(node.id)}&backgroundColor=transparent`;
             node.img = img;
           }
 

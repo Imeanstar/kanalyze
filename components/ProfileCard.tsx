@@ -72,7 +72,7 @@ export default function ProfileCard({ member, rank }: ProfileCardProps) {
             {/* Avatar */}
             <div className="w-12 h-12 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex-shrink-0 -ml-6 shadow-md">
               <img 
-                src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
                 alt={`${member.name} avatar`}
                 className="w-full h-full object-cover"
               />

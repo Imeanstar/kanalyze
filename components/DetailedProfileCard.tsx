@@ -69,7 +69,7 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
             
             <div className="w-14 h-14 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex-shrink-0">
               <img 
-                src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
                 alt={`${member.name} avatar`}
                 className="w-full h-full object-cover"
               />

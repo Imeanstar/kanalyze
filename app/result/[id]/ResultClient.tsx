@@ -377,7 +377,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                         <div className="relative">
                           <div className="w-14 h-14 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden">
                             <img
-                              src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(m.name)}&backgroundColor=transparent`}
+                              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(m.name)}&backgroundColor=transparent`}
                               alt={m.name}
                               className="w-full h-full object-cover"
                             />
