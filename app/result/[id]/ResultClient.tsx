@@ -73,7 +73,9 @@ export default function ResultClient({ analysis }: ResultClientProps) {
     ].join('\n');
 
     try {
-      if (navigator.share) {
+      // Web Share API on mobile only — Windows desktop shows a broken grey dialog
+      const isMobile = typeof navigator.share === 'function' && navigator.maxTouchPoints > 0;
+      if (isMobile) {
         await navigator.share({ title: '🔥 우리 단톡방 AI 분석 결과!', text: shareText });
       } else {
         await navigator.clipboard.writeText(shareText);
@@ -81,7 +83,12 @@ export default function ResultClient({ analysis }: ResultClientProps) {
         setTimeout(() => setCopied(false), 2500);
       }
     } catch {
-      // User cancelled share or clipboard failed — silently ignore
+      // User cancelled share or clipboard failed — try clipboard as final fallback
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      } catch { /* ignore */ }
     }
   };
 
