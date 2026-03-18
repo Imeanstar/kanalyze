@@ -12,7 +12,7 @@ const notoSansKr = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: 'Kanalyze — AI 카카오톡 분석기',
   description:
-    '카카오톡 대화 파일을 업로드하면 AI가 수다쟁이 Top 10의 성격과 단톡방 역할을 낱낱이 분석해 드립니다.',
+    '카카오톡 대화 파일을 업로드하면 AI가 수다쟁이 Top 10의 성격과 단톡방 역할을 분석해 드립니다.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://kanalyze.vercel.app'),
 };
 

@@ -103,7 +103,7 @@ export default function HomePage() {
         >
           우리 단톡방,{' '}
           <span className="bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-            AI가 다 알고 있다
+            AI의 시선으로
           </span>
         </motion.h1>
 
@@ -114,7 +114,7 @@ export default function HomePage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-white/50 text-center text-lg mb-12 max-w-xl"
         >
-          카카오톡 대화 파일을 올리면 AI가 수다쟁이 Top 10의 성격과 역할을 낱낱이 분석해 드립니다.
+          카카오톡 대화 파일을 올리면 AI가 수다쟁이 Top 10의 성격과 역할을 분석해 드립니다.
           <br />
           <span className="text-white/30 text-sm">파일은 서버에 저장되지 않습니다.</span>
         </motion.p>
