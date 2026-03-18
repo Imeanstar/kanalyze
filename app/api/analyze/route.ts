@@ -251,6 +251,13 @@ function extractJsonString(rawText: string): any {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: '서버 환경 변수 오류: Vercel에 GEMINI_API_KEY가 설정되지 않았습니다. 관리자에게 문의하세요.' },
+        { status: 500 }
+      );
+    }
+
     const body: ParsedPayload = await req.json();
     const { group_stats, top10 } = body;
 
