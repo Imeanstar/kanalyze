@@ -127,15 +127,6 @@ export default function ResultClient({ analysis }: ResultClientProps) {
     return null;
   };
 
-  // Setup Bubble Menu Items
-  const bubbleMenuItems = members.map((m, i) => ({
-    label: m.name,
-    href: '#',
-    rotation: i % 2 === 0 ? -6 : 6,
-    hoverStyles: { bgColor: COLORS[i % 10], textColor: '#ffffff' },
-    onClick: () => setSelectedDetailedMember(m.name)
-  }));
-
 
   return (
     <main className="min-h-screen bg-[#09090b] text-white selection:bg-violet-500/30 font-sans">

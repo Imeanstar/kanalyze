@@ -1,8 +1,11 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Download, Share2 } from 'lucide-react';
 import type { MemberAnalysis } from '@/lib/supabase';
 import ReactMarkdown from 'react-markdown';
+import MemberShareCard from './MemberShareCard';
 
 interface DetailedProfileCardProps {
   member: MemberAnalysis;
@@ -47,6 +50,42 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
     badge: 'bg-white/20 text-white',
   };
   const gradient = GRADIENT_PALETTES[(rank - 1) % GRADIENT_PALETTES.length];
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [sharing, setSharing] = useState(false);
+  const [shareOk, setShareOk] = useState(false);
+
+  const handleShareCard = async () => {
+    if (!cardRef.current || sharing) return;
+    setSharing(true);
+    try {
+      // Dynamic import to avoid SSR issues
+      const { toPng } = await import('html-to-image');
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
+
+      const isMobile = typeof navigator.share === 'function' && navigator.maxTouchPoints > 0;
+      if (isMobile) {
+        // Convert dataUrl to Blob for Web Share API
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], `${member.name}_kanalyze.png`, { type: 'image/png' });
+        if (navigator.canShare?.({ files: [file] })) {
+          await navigator.share({ files: [file], title: `${member.name} — Kanalyze AI 분석카드` });
+          setShareOk(true);
+          setTimeout(() => setShareOk(false), 2500);
+          return;
+        }
+      }
+      // Desktop / fallback: download as PNG
+      const link = document.createElement('a');
+      link.download = `${member.name}_kanalyze.png`;
+      link.href = dataUrl;
+      link.click();
+      setShareOk(true);
+      setTimeout(() => setShareOk(false), 2500);
+    } finally {
+      setSharing(false);
+    }
+  };
 
   return (
     <motion.div
@@ -68,6 +107,7 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
             </div>
             
             <div className="w-14 h-14 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
                 alt={`${member.name} avatar`}
@@ -81,12 +121,47 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
             </div>
           </div>
 
-          <div className="text-right flex-shrink-0 bg-white/5 px-4 py-2 rounded-xl backdrop-blur-md border border-white/5">
-            <p className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-400">
-              {member.message_count.toLocaleString()}
-            </p>
-            <p className="text-[10px] uppercase tracking-wider text-white/40 mt-0.5">메시지</p>
+          <div className="flex flex-col items-end gap-2 flex-shrink-0">
+            <div className="text-right bg-white/5 px-4 py-2 rounded-xl backdrop-blur-md border border-white/5">
+              <p className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-400">
+                {member.message_count.toLocaleString()}
+              </p>
+              <p className="text-[10px] uppercase tracking-wider text-white/40 mt-0.5">메시지</p>
+            </div>
+
+            {/* Share card button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleShareCard}
+              disabled={sharing}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                shareOk
+                  ? 'bg-emerald-500 text-black'
+                  : sharing
+                  ? 'bg-violet-500/50 text-white/50 cursor-wait'
+                  : 'bg-violet-600 hover:bg-violet-500 text-white'
+              }`}
+            >
+              {shareOk ? (
+                '✅ 저장됨!'
+              ) : sharing ? (
+                '처리 중...'
+              ) : (
+                <>
+                  {typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
+                    ? <><Share2 className="w-3 h-3" /> 카드 공유</>
+                    : <><Download className="w-3 h-3" /> 카드 저장</>
+                  }
+                </>
+              )}
+            </motion.button>
           </div>
+        </div>
+
+        {/* Hidden share card (captured by html-to-image) */}
+        <div className="mb-6 flex justify-center">
+          <MemberShareCard ref={cardRef} member={member} rank={rank} />
         </div>
 
         {/* Markdown Content */}
