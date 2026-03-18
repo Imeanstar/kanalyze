@@ -19,6 +19,8 @@ interface Edge {
   label: string;
 }
 
+
+
 interface RelationshipGraphProps {
   edges: Edge[];
 }
@@ -90,6 +92,7 @@ export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
         height={dimensions.height}
         graphData={graphData}
         nodeLabel="name"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         nodeColor={(node: any) => {
           // 이름 해시를 기반으로 랜덤 색상 부여 (단톡방 멤버별 고유 색상 느낌)
           let hash = 0;
@@ -106,13 +109,13 @@ export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
         linkWidth={1.5}
         // 라벨 그리기 커스텀
         linkCanvasObjectMode={() => 'after'}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         linkCanvasObject={(link: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
           const MAX_FONT_SIZE = 4;
-          const LABEL_NODE_MARGIN = (nodeRelSize: number) => nodeRelSize * 1.5;
           const start = link.source;
           const end = link.target;
           
-          if (typeof start !== 'object' || typeof end !== 'object') return; // 초기화 전 방어코드
+          if (!start || !end || start.x === undefined || start.y === undefined || end.x === undefined || end.y === undefined) return; // 초기화 전 방어코드
 
           // 텍스트 위치 계산 (선의 중앙)
           const textPos = {
@@ -151,7 +154,10 @@ export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
           ctx.restore();
         }}
         // 노드 커스텀 렌더링 (이름 보이기)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
+          if (node.x === undefined || node.y === undefined) return;
+
           const label = node.name;
           const fontSize = 14 / globalScale;
           ctx.font = `bold ${fontSize}px Inter, sans-serif`;

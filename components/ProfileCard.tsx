@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MessageSquare, Quote, Star, Zap, Crown } from 'lucide-react';
 import type { MemberAnalysis } from '@/lib/supabase';
 
 interface ProfileCardProps {
@@ -27,7 +26,7 @@ const RANK_STYLES: Record<number, { border: string; glow: string; badge: string 
   },
 };
 
-const TRAIT_ICONS = [Star, Zap, MessageSquare, Crown, Quote];
+
 
 const GRADIENT_PALETTES = [
   'from-violet-600/20 to-pink-600/10',

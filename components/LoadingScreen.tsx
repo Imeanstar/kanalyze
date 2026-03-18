@@ -59,6 +59,7 @@ export default function LoadingScreen({ stage }: LoadingScreenProps) {
       x: Math.random() * 100,
       y: Math.random() * 100,
     }));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setParticles(arr);
   }, []);
 

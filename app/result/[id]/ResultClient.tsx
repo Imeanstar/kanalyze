@@ -72,6 +72,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
   }
 
   // Calculate percentages for Tooltip (Point 2)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderTooltipContent = (props: any) => {
     const { active, payload } = props;
     if (active && payload && payload.length) {

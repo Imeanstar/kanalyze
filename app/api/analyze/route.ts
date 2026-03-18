@@ -142,6 +142,7 @@ async function generateWithRetry(prompt: string): Promise<string> {
 
 
 // 더 강력한 JSON 추출 헬퍼 함수
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractJsonString(rawText: string): any {
   let jsonString = rawText.trim();
   
@@ -163,8 +164,9 @@ function extractJsonString(rawText: string): any {
   // 먼저 정상적인 파싱 시도
   try {
     return JSON.parse(jsonString);
-  } catch (e) {
+  } catch {
     // 실패 시, 정규식을 사용하여 휴리스틱하게 키-값 추출 시도
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: any = {};
     
     // 이스케이프되지 않은 따옴표 처리를 위한 헬퍼 정규식 및 indexOf 조합
@@ -180,7 +182,7 @@ function extractJsonString(rawText: string): any {
       if (startQuoteIdx === -1) return null;
       
       // 값의 안쪽 내용은 startQuoteIdx + 1 부터 시작
-      let rest = jsonString.substring(startQuoteIdx + 1);
+      const rest = jsonString.substring(startQuoteIdx + 1);
       
       let endIdx = -1;
       if (isLast) {
@@ -259,6 +261,7 @@ export async function POST(req: NextRequest) {
     const summaryPrompt = buildGroupSummaryPrompt(group_stats, top10);
     const summaryRaw = await generateWithRetry(summaryPrompt);
     let groupSummary = "즐겁고 활기찬 대화가 오가는 단톡방입니다.";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let relationshipMap: any = []; // 기본값을 빈 배열로 변경
     try {
       const parsed = extractJsonString(summaryRaw);
