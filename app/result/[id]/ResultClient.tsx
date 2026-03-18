@@ -33,6 +33,7 @@ const COLORS = [
 export default function ResultClient({ analysis }: ResultClientProps) {
   const [activeTab, setActiveTab] = useState<'summary' | 'relationship' | 'detailed'>('summary');
   const [selectedDetailedMember, setSelectedDetailedMember] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const { data } = analysis;
   const members = data.members ?? [];
@@ -44,17 +45,46 @@ export default function ResultClient({ analysis }: ResultClientProps) {
   const totalMessages = top10Total + othersCount;
 
   const handleShare = async () => {
-    const url = window.location.href;
-    const text = `🔥 우리 단톡방 성격 분석 결과 도착!\n${url}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: text, url });
-      } catch {}
-    } else {
-      await navigator.clipboard.writeText(url);
-      alert('링크가 클립보드에 복사됐어요!');
+    const resultUrl = window.location.href;
+    const serviceUrl = window.location.origin;
+
+    // Build TOP3 lines
+    const top3 = members.slice(0, 3);
+    const rankEmojis = ['👑', '🥈', '🥉'];
+    const top3Lines = top3
+      .map((m, i) => `  ${rankEmojis[i]} ${m.name} — ${m.title}`)
+      .join('\n');
+
+    // Trim group summary (max 60 chars)
+    const summarySlice = typeof groupStats === 'string'
+      ? groupStats.slice(0, 60) + (groupStats.length > 60 ? '...' : '')
+      : '우리 단톡방 AI 분석 완료!';
+
+    const shareText = [
+      `🔥 우리 단톡방, AI가 낱낱이 분석했다!`,
+      ``,
+      `📊 ${summarySlice}`,
+      ``,
+      `🏆 TOP 3 캐릭터`,
+      top3Lines,
+      ``,
+      `👉 우리 결과 보기: ${resultUrl}`,
+      `🤖 내 단톡방도 분석하기: ${serviceUrl}`,
+    ].join('\n');
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: '🔥 우리 단톡방 AI 분석 결과!', text: shareText });
+      } else {
+        await navigator.clipboard.writeText(shareText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      }
+    } catch {
+      // User cancelled share or clipboard failed — silently ignore
     }
   };
+
 
   // (Point 4) Add 'Others' to Chart
   const chartData = members.map((m, i) => ({
@@ -132,10 +162,13 @@ export default function ResultClient({ analysis }: ResultClientProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleShare}
-            className="mt-6 inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-black font-bold shadow-xl hover:shadow-2xl hover:bg-gray-100 transition-all"
+            className={`mt-6 inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold shadow-xl hover:shadow-2xl transition-all ${
+              copied
+                ? 'bg-emerald-400 text-black'
+                : 'bg-white text-black hover:bg-gray-100'
+            }`}
           >
-            <Share2 className="w-5 h-5" />
-            단톡방에 결과 공유하기
+            {copied ? '✅ 복사됨! 카톡에 붙여넣기 하세요' : <><Share2 className="w-5 h-5" /> 단톡방에 결과 공유하기</>}
           </motion.button>
         </motion.div>
 
