@@ -92,7 +92,10 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
         {/* Markdown Content */}
         <div className="prose prose-invert max-w-none prose-headings:text-white/90 prose-h3:text-lg prose-p:text-white/70 prose-a:text-violet-400 prose-blockquote:border-violet-500/50 prose-blockquote:bg-white/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-ul:text-white/70 prose-li:marker:text-violet-500">
           {member.detailed_markdown ? (
-            <ReactMarkdown>{member.detailed_markdown}</ReactMarkdown>
+            <ReactMarkdown>
+              {/* AI sometimes outputs literal '\n' escape sequences instead of real newlines */}
+              {member.detailed_markdown.replace(/\\n/g, '\n')}
+            </ReactMarkdown>
           ) : (
             <p className="text-white/40 italic text-center py-8">상세 분석 데이터가 없습니다.</p>
           )}
