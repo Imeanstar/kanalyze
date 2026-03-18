@@ -7,7 +7,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import ReactMarkdown from 'react-markdown';
 import ProfileCard from '@/components/ProfileCard';
 import DetailedProfileCard from '@/components/DetailedProfileCard';
-import BubbleMenu from '@/components/BubbleMenu';
 import AdBanner from '@/components/AdBanner';
 import RelationshipGraph from '@/components/RelationshipGraph';
 import type { AnalysisRow } from '@/lib/supabase';
@@ -354,21 +353,43 @@ export default function ResultClient({ analysis }: ResultClientProps) {
 
             {/* ── TAB 3: DETAILED ── */}
             {activeTab === 'detailed' && (
-              <div className="space-y-12">
+              <div className="space-y-8">
                 <div className="text-center">
                   <h2 className="text-3xl font-black text-white mb-3">프리미엄 정밀 분석 리포트</h2>
                   <p className="text-white/50 text-base font-medium">✨ 궁금한 사람을 클릭해서 심층 분석을 확인하세요! ✨</p>
                 </div>
-                
-                {/* Point 6: Bubble Menu Integration */}
-                <div className="relative h-[300px] md:h-[400px] bg-[#121217] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center">
-                   <BubbleMenu 
-                      logo="👇 Click Here"
-                      items={bubbleMenuItems}
-                      menuBg="#2dd4bf"
-                      menuContentColor="#0f172a"
-                      className="w-full"
-                   />
+
+                {/* Member Selector Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                  {members.map((m, i) => {
+                    const rankEmojis = ['👑', '🥈', '🥉'];
+                    const isSelected = selectedDetailedMember === m.name;
+                    return (
+                      <button
+                        key={m.name}
+                        onClick={() => setSelectedDetailedMember(isSelected ? null : m.name)}
+                        className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all duration-200 ${
+                          isSelected
+                            ? 'border-violet-500 bg-violet-500/20 shadow-lg shadow-violet-500/20'
+                            : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30'
+                        }`}
+                      >
+                        <div className="relative">
+                          <div className="w-14 h-14 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden">
+                            <img
+                              src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(m.name)}&backgroundColor=transparent`}
+                              alt={m.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          {i < 3 && (
+                            <span className="absolute -top-1 -right-1 text-sm">{rankEmojis[i]}</span>
+                          )}
+                        </div>
+                        <span className="text-white text-xs font-bold text-center leading-tight line-clamp-2">{m.name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Render Selected Profile */}
@@ -391,8 +412,8 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                 </AnimatePresence>
                 
                 {!selectedDetailedMember && (
-                  <div className="text-center py-20 border-2 border-dashed border-white/10 rounded-3xl mt-8">
-                     <p className="text-white/30 text-lg font-bold">위의 버블 메뉴에서 멤버를 선택해주세요.</p>
+                  <div className="text-center py-20 border-2 border-dashed border-white/10 rounded-3xl mt-4">
+                    <p className="text-white/30 text-lg font-bold">👆 위에서 멤버를 선택해주세요</p>
                   </div>
                 )}
                 
