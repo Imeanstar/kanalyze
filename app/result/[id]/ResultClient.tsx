@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Users, MessageSquare, Calendar, PieChart as PieChartIcon, Network, UserSquare2 } from 'lucide-react';
+import { Share2, Users, MessageSquare, Calendar, PieChart as PieChartIcon, Network, UserSquare2, Home } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import ReactMarkdown from 'react-markdown';
 import ProfileCard from '@/components/ProfileCard';
@@ -55,9 +55,9 @@ export default function ResultClient({ analysis }: ResultClientProps) {
       .map((m, i) => `  ${rankEmojis[i]} ${m.name} — ${m.title}`)
       .join('\n');
 
-    // Trim group summary (max 60 chars)
+    // Trim group summary (max 120 chars so it doesn't get truncated
     const summarySlice = typeof groupStats === 'string'
-      ? groupStats.slice(0, 60) + (groupStats.length > 60 ? '...' : '')
+      ? groupStats.slice(0, 120) + (groupStats.length > 120 ? '...' : '')
       : '우리 단톡방 AI 분석 완료!';
 
     const shareText = [
@@ -177,6 +177,16 @@ export default function ResultClient({ analysis }: ResultClientProps) {
           >
             {copied ? '✅ 복사됨! 카톡에 붙여넣기 하세요' : <><Share2 className="w-5 h-5" /> 단톡방에 결과 공유하기</>}
           </motion.button>
+
+          {/* 처음으로 돌아가기 */}
+          <motion.a
+            href="/"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 text-sm font-medium transition-all"
+          >
+            <Home className="w-4 h-4" /> 처음으로 돌아가기
+          </motion.a>
         </motion.div>
 
         {/* ── Tabs Navigation ────────────────────────────────────────────── */}

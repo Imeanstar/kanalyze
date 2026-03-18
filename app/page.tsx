@@ -117,6 +117,8 @@ export default function HomePage() {
           카카오톡 대화 파일을 올리면 AI가 수다쟁이 Top 10의 성격과 역할을 분석해 드립니다.
           <br />
           <span className="text-white/30 text-sm">파일은 서버에 저장되지 않습니다.</span>
+          <br />
+          <span className="text-amber-400/70 text-sm">⚠️ PC(컴퓨터)로 내보낸 대화 내역 파일만 지원합니다.</span>
         </motion.p>
 
         {/* Upload Zone */}
