@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Share2 } from 'lucide-react';
+import { Download, Share2, MessageCircle, Users, Percent, Clock } from 'lucide-react';
 import type { MemberAnalysis } from '@/lib/supabase';
 import ReactMarkdown from 'react-markdown';
 import MemberShareCard from './MemberShareCard';
@@ -10,6 +10,8 @@ import MemberShareCard from './MemberShareCard';
 interface DetailedProfileCardProps {
   member: MemberAnalysis;
   rank: number;
+  totalMessages: number;
+  totalSpeakers: number;
 }
 
 const RANK_STYLES: Record<number, { border: string; glow: string; badge: string }> = {
@@ -43,7 +45,7 @@ const GRADIENT_PALETTES = [
   'from-purple-600/20 to-indigo-600/10',
 ];
 
-export default function DetailedProfileCard({ member, rank }: DetailedProfileCardProps) {
+export default function DetailedProfileCard({ member, rank, totalMessages, totalSpeakers }: DetailedProfileCardProps) {
   const rankStyle = RANK_STYLES[rank] || {
     border: 'border-white/10',
     glow: 'shadow-white/5',
@@ -121,21 +123,14 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
             </div>
           </div>
 
-          <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start w-full md:w-auto gap-3 flex-shrink-0 bg-white/5 md:bg-transparent px-4 py-3 md:p-0 rounded-2xl md:rounded-none">
-            <div className="md:text-right md:bg-white/5 md:px-4 md:py-2 md:rounded-xl md:backdrop-blur-md md:border border-white/5 flex items-baseline gap-2 md:block">
-              <p className="text-xl md:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-400">
-                {member.message_count.toLocaleString()}
-              </p>
-              <p className="text-xs md:text-[10px] md:uppercase text-white/40 md:mt-0.5 font-medium">메시지</p>
-            </div>
-
+          <div className="flex flex-col items-end gap-3 flex-shrink-0">
             {/* Share card button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleShareCard}
               disabled={sharing}
-              className={`inline-flex w-full md:w-auto justify-center items-center gap-1.5 px-4 py-2.5 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-sm md:text-xs font-bold transition-all ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
                 shareOk
                   ? 'bg-emerald-500 text-black'
                   : sharing
@@ -150,12 +145,47 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
               ) : (
                 <>
                   {typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
-                    ? <><Share2 className="w-4 h-4 md:w-3 md:h-3" /> 카드 공유</>
-                    : <><Download className="w-4 h-4 md:w-3 md:h-3" /> 카드 저장</>
+                    ? <><Share2 className="w-4 h-4" /> 카드 공유</>
+                    : <><Download className="w-4 h-4" /> 카드 저장</>
                   }
                 </>
               )}
             </motion.button>
+          </div>
+        </div>
+
+        {/* 4 Stat Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+          <div className="bg-white/5 rounded-xl p-3 flex flex-col items-center justify-center border border-white/5">
+            <div className="flex items-center gap-1.5 text-white/40 mb-1">
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-bold tracking-wider">메시지 개수</span>
+            </div>
+            <p className="text-lg font-bold text-white">{member.message_count.toLocaleString()}건</p>
+          </div>
+          
+          <div className="bg-white/5 rounded-xl p-3 flex flex-col items-center justify-center border border-white/5">
+            <div className="flex items-center gap-1.5 text-white/40 mb-1">
+              <Users className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-bold tracking-wider">단톡방 인원</span>
+            </div>
+            <p className="text-lg font-bold text-white">{totalSpeakers}명</p>
+          </div>
+          
+          <div className="bg-white/5 rounded-xl p-3 flex flex-col items-center justify-center border border-white/5">
+            <div className="flex items-center gap-1.5 text-white/40 mb-1">
+              <Percent className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-bold tracking-wider">메시지 비중</span>
+            </div>
+            <p className="text-lg font-bold text-white">{totalMessages > 0 ? ((member.message_count / totalMessages) * 100).toFixed(1) : '0.0'}%</p>
+          </div>
+          
+          <div className="bg-white/5 rounded-xl p-3 flex flex-col items-center justify-center border border-white/5">
+            <div className="flex items-center gap-1.5 text-white/40 mb-1">
+              <Clock className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-bold tracking-wider">주 활동시간</span>
+            </div>
+            <p className="text-sm font-bold text-white text-center line-clamp-1">{member.active_time || '알 수 없음'}</p>
           </div>
         </div>
 
