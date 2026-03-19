@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import UploadZone from '@/components/UploadZone';
 import LoadingScreen from '@/components/LoadingScreen';
+import AdBanner from '@/components/AdBanner';
 
 type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving';
 
@@ -165,6 +166,10 @@ export default function HomePage() {
             </span>
           ))}
         </motion.div>
+
+        <div className="max-w-xl w-full">
+          <AdBanner />
+        </div>
       </div>
     </main>
   );
