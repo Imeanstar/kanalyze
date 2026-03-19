@@ -20,14 +20,6 @@ export const metadata: Metadata = {
     description: '카카오톡 대화 파일을 업로드하면 AI가 수다쟁이 Top 10의 성격과 단톡방 역할을 분석해 드립니다.',
     url: 'https://www.kanalyze.cloud',
     siteName: 'Kanalyze',
-    images: [
-      {
-        url: 'https://www.kanalyze.cloud/og-default.png',
-        width: 1200,
-        height: 630,
-        alt: 'Kanalyze AI 카카오톡 분석기',
-      },
-    ],
     locale: 'ko_KR',
     type: 'website',
   },
