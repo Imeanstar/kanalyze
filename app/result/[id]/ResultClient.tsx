@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, PieChart as PieChartIcon, Network, UserSquare2, Home, Lock, Play } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import ReactMarkdown from 'react-markdown';
 import ProfileCard from '@/components/ProfileCard';
 import DetailedProfileCard from '@/components/DetailedProfileCard';
 import AdBanner from '@/components/AdBanner';
@@ -354,6 +353,8 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                       key={member.name} 
                       member={member} 
                       rank={i + 1} 
+                      totalMessages={totalMessages}
+                      totalSpeakers={data.total_speakers || (members.length + (othersCount > 0 ? Math.round(othersCount / 100) + 1 : 0))}
                     />
                   ))}
                 </div>
@@ -375,7 +376,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                     </div>
 
                     <div className="overflow-x-auto relative z-10 custom-scrollbar pb-4 min-h-[400px]">
-                      <RelationshipGraph edges={data.relationship_map || ''} />
+                      <RelationshipGraph edges={data.relationship_map} />
                     </div>
                   </div>
                 ) : renderLockedOverlay('relationship')}
@@ -437,9 +438,9 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                         >
                           <DetailedProfileCard 
                             member={members.find(m => m.name === selectedDetailedMember)!} 
-                            rank={members.findIndex(m => m.name === selectedDetailedMember) + 1} 
+                            rank={members.findIndex(m => m.name === selectedDetailedMember) + 1}
                             totalMessages={totalMessages}
-                            totalSpeakers={data.total_speakers || (members.length + (othersCount > 0 ? Math.round(othersCount / 100) + 1 : 0))}
+                            totalSpeakers={data.total_speakers || members.length}
                           />
                         </motion.div>
                       )}

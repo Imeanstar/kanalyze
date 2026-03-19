@@ -6,7 +6,8 @@ import type { MemberAnalysis } from '@/lib/supabase';
 interface MemberShareCardProps {
   member: MemberAnalysis;
   rank: number;
-  groupName?: string;
+  totalMessages?: number;
+  totalSpeakers?: number;
 }
 
 const RANK_COLORS: Record<number, { border: string; badge: string; glow: string }> = {
@@ -16,14 +17,11 @@ const RANK_COLORS: Record<number, { border: string; badge: string; glow: string 
 };
 
 const MemberShareCard = forwardRef<HTMLDivElement, MemberShareCardProps>(
-  ({ member, rank, groupName = '단톡방' }, ref) => {
+  ({ member, rank, totalMessages = 0, totalSpeakers = 0 }, ref) => {
     const rankStyle = RANK_COLORS[rank] || { border: '#a855f7', badge: '#a855f7', glow: 'rgba(168,85,247,0.3)' };
     const rankEmoji = rank <= 3 ? ['👑', '🥈', '🥉'][rank - 1] : `#${rank}`;
 
-    // Extract first line of detailed_markdown as a one-liner summary
-    const summary = member.detailed_markdown
-      ? member.detailed_markdown.replace(/\\n/g, '\n').split('\n').find(l => l.trim() && !l.startsWith('#'))?.slice(0, 80) ?? ''
-      : '';
+    const percentage = totalMessages > 0 ? ((member.message_count / totalMessages) * 100).toFixed(1) : '0.0';
 
     const avatarUrl = `https://api.dicebear.com/7.x/adventurer/png?seed=${encodeURIComponent(member.name)}&backgroundColor=b6e3f4,c0aede,d1d4f9&size=200`;
 
@@ -91,20 +89,24 @@ const MemberShareCard = forwardRef<HTMLDivElement, MemberShareCardProps>(
               </div>
             </div>
 
-            <div style={{ width: '40px', height: '2px', background: `linear-gradient(90deg, ${rankStyle.border}, transparent)` }} />
+            <div style={{ width: '40px', height: '2px', background: `linear-gradient(90deg, ${rankStyle.border}, transparent)`, marginTop: '4px' }} />
 
-            <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: '12px', lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
-              {summary || '분석 데이터 없음'}
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '4px' }}>
-              <div>
-                <div style={{ color: 'white', fontSize: '18px', fontWeight: 900 }}>{member.message_count.toLocaleString()}</div>
-                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>메시지</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '10px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '6px 12px', textAlign: 'center', minWidth: '72px' }}>
+                <div style={{ color: 'white', fontSize: '16px', fontWeight: 900 }}>{member.message_count.toLocaleString()}</div>
+                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>메시지</div>
               </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 700 }}>{groupName}</div>
-                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>단톡방</div>
+              <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '6px 12px', textAlign: 'center', minWidth: '64px' }}>
+                <div style={{ color: 'white', fontSize: '16px', fontWeight: 900 }}>{percentage}%</div>
+                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>비중</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '6px 12px', textAlign: 'center', minWidth: '64px' }}>
+                <div style={{ color: 'white', fontSize: '15px', fontWeight: 900 }}>{totalSpeakers > 0 ? `${totalSpeakers}명` : '-'}</div>
+                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>인원</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '6px 10px', textAlign: 'center', flex: 1 }}>
+                <div style={{ color: 'white', fontSize: '12px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{member.active_time || '-'}</div>
+                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>활동시간</div>
               </div>
             </div>
           </div>
