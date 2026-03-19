@@ -337,7 +337,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                   </div>
                 </div>
 
-                <AdBanner />
+                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
 
                 <div className="pt-8 mb-6">
                   <h3 className="text-3xl font-black text-center text-white">🏆 TOP 10 랭킹</h3>
@@ -383,7 +383,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                     </div>
                   </div>
                 ) : renderLockedOverlay('relationship')}
-                <AdBanner />
+                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
               </div>
             )}
 
@@ -454,7 +454,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                     )}
                   </>
                 ) : renderLockedOverlay('detailed')}
-                <AdBanner />
+                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
               </div>
             )}
           </motion.div>

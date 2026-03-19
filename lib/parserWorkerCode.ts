@@ -7,10 +7,15 @@
 export const PARSER_WORKER_CODE = /* javascript */ `
 // ── Regex ────────────────────────────────────────────────────────────────────
 const DATE_LINE_RE = /^-+\\s+\\d{4}년\\s+\\d+월\\s+\\d+일\\s+.+요일\\s+-+$/;
+const MOBILE_DATE_LINE_RE = /^\\d{4}년\\s+\\d+월\\s+\\d+일\\s+.+요일$/;
+
 const MSG_LINE_RE  = /^\\[(.+?)\\]\\s+\\[(오전|오후)\\s+(\\d+):(\\d+)\\]\\s+(.*)$/;
+const MOBILE_MSG_LINE_RE = /^\\d{4}\\.\\s+\\d{1,2}\\.\\s+\\d{1,2}\\.\\s+(?:(오전|오후)\\s+)?(\\d+):(\\d+),\\s+(.+?)\\s+:\\s+(.*)$/;
+const ANDROID_MSG_LINE_RE = /^\\d{4}년\\s+\\d{1,2}월\\s+\\d{1,2}일\\s+(오전|오후)\\s+(\\d+):(\\d+),\\s+(.+?)\\s+:\\s+(.*)$/;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function toHour24(period, h) {
+  if (!period) return h === 24 ? 0 : h;
   if (period === '오전') return h === 12 ? 0 : h;
   return h === 12 ? 12 : h + 12;
 }
@@ -64,7 +69,15 @@ function parseKakaoTxt(text) {
         name    = m[4].trim();
         content = m[5];
       } else {
-        continue;
+        m = ANDROID_MSG_LINE_RE.exec(raw);
+        if (m) {
+          period  = m[1];
+          hour    = parseInt(m[2], 10);
+          name    = m[4].trim();
+          content = m[5];
+        } else {
+          continue;
+        }
       }
     }
 
@@ -114,7 +127,13 @@ function parseKakaoTxt(text) {
         name = m[4].trim();
         content = m[5];
       } else {
-        continue;
+        m = ANDROID_MSG_LINE_RE.exec(raw);
+        if (m) {
+          name = m[4].trim();
+          content = m[5];
+        } else {
+          continue;
+        }
       }
     }
 
