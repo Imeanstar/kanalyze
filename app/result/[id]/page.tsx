@@ -40,6 +40,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
       url: `${baseUrl}/result/${id}`,
       siteName: 'Kanalyze — AI 카톡 분석기',
+      images: [
+        {
+          url: 'https://www.kanalyze.cloud/og-default.png?v=2',
+          width: 1200,
+          height: 630,
+          alt: '카카오톡 단톡방 AI 분석 결과',
+        },
+      ],
       type: 'website',
       locale: 'ko_KR',
     },

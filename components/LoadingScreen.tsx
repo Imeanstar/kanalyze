@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Zap, ChartBar } from 'lucide-react';
+import AdBanner from '@/components/AdBanner';
 
 type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving';
 
@@ -184,7 +185,6 @@ export default function LoadingScreen({ stage }: LoadingScreenProps) {
           ))}
         </div>
 
-        {/* Ad Slot in Loading */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -192,12 +192,7 @@ export default function LoadingScreen({ stage }: LoadingScreenProps) {
           className="w-full mt-4"
         >
           <div className="flex flex-col items-center gap-2">
-            <span className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">Sponsored Analysis</span>
-            <div className="w-full p-4 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center h-20">
-               <p className="text-white/20 text-xs text-center leading-relaxed">
-                 분석 결과를 준비하는 동안<br/>잠시만 기다려 주세요
-               </p>
-            </div>
+            <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
           </div>
         </motion.div>
       </div>
