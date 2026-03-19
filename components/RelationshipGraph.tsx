@@ -26,8 +26,11 @@ export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
     content = JSON.stringify(edges, null, 2);
   }
 
-  // Ensure robust unescaping of newlines
-  const displayContent = content.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+  // Ensure robust unescaping: \\ → \ must come first, then \n → newline
+  const displayContent = content
+    .replace(/\\\\/g, '\\')
+    .replace(/\\n/g, '\n')
+    .replace(/\\"/g, '"');
 
   return (
     <div className="w-full flex justify-center py-4">
@@ -42,7 +45,7 @@ export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
         </div>
 
         {/* Terminal Body */}
-        <div className="p-4 md:p-8 flex flex-col gap-2 max-h-[800px] overflow-x-auto overflow-y-auto custom-scrollbar bg-[#0f111a]">
+        <div className="p-4 md:p-8 flex flex-col gap-2 overflow-x-auto custom-scrollbar bg-[#0f111a]">
           <pre className="font-mono text-[12px] md:text-[15px] leading-[1.6] text-[#e2e8f0] tracking-wider whitespace-pre" style={{ fontFamily: "'Fira Code', 'Consolas', monospace" }}>
             {displayContent}
           </pre>

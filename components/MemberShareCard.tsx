@@ -19,7 +19,7 @@ const RANK_COLORS: Record<number, { border: string; badge: string; glow: string 
 const MemberShareCard = forwardRef<HTMLDivElement, MemberShareCardProps>(
   ({ member, rank, totalMessages = 0, totalSpeakers = 0 }, ref) => {
     const rankStyle = RANK_COLORS[rank] || { border: '#a855f7', badge: '#a855f7', glow: 'rgba(168,85,247,0.3)' };
-    const rankEmoji = rank <= 3 ? ['👑', '🥈', '🥉'][rank - 1] : `#${rank}`;
+    const rankEmoji = rank <= 3 ? ['👑', '🥈', '🥉'][rank - 1] : null;
 
     const percentage = totalMessages > 0 ? ((member.message_count / totalMessages) * 100).toFixed(1) : '0.0';
 
@@ -46,35 +46,34 @@ const MemberShareCard = forwardRef<HTMLDivElement, MemberShareCardProps>(
         <div style={{ height: '4px', background: 'linear-gradient(90deg, #7c3aed, #ec4899, #f97316)', flexShrink: 0 }} />
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px 6px', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '10px 20px 6px', flexShrink: 0 }}>
           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase' }}>
             🤖 KANALYZE AI 분석카드
           </span>
-          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '10px' }}>www.kanalyze.cloud</span>
         </div>
 
         {/* Main body */}
         <div style={{ display: 'flex', flex: 1, padding: '8px 20px 16px', gap: '20px', minHeight: 0 }}>
           {/* Left: Avatar */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', flexShrink: 0 }}>
             <div style={{
-              width: '120px', height: '120px', borderRadius: '50%',
+              width: '110px', height: '110px', borderRadius: '50%',
               border: `3px solid ${rankStyle.border}`,
               background: 'rgba(255,255,255,0.08)',
               overflow: 'hidden',
               boxShadow: `0 0 20px ${rankStyle.glow}`,
             }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={avatarUrl} alt={member.name} width={120} height={120} style={{ objectFit: 'cover' }} />
+              <img src={avatarUrl} alt={member.name} width={110} height={110} style={{ objectFit: 'cover' }} />
             </div>
             {/* Rank badge */}
             <div style={{
               background: rankStyle.badge,
               borderRadius: '20px',
-              padding: '3px 12px',
+              padding: '3px 14px',
               fontSize: '12px', fontWeight: 800, color: '#000',
             }}>
-              {rankEmoji} {rank}위
+              {rankEmoji ? `${rankEmoji} ${rank}위` : `${rank}위`}
             </div>
           </div>
 
