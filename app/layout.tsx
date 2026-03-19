@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: 'Kanalyze — AI 카카오톡 분석기',
   description:
     '카카오톡 대화 파일을 업로드하면 AI가 수다쟁이 Top 10의 성격과 단톡방 역할을 분석해 드립니다.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://kanalyze.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://www.kanalyze.cloud'),
 };
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9950230676038014"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
         />
       </head>
       <body className="font-sans antialiased bg-[#0a0a14] text-white">

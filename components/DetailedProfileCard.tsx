@@ -100,13 +100,13 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
 
       <div className="p-6 md:p-8">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 mb-6 pb-6 border-b border-white/10">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6 pb-6 border-b border-white/10">
+          <div className="flex items-center gap-4 w-full md:w-auto">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${rankStyle.badge} flex-shrink-0 shadow-lg`}>
               {rank <= 3 ? ['👑', '🥈', '🥉'][rank - 1] : `#${rank}`}
             </div>
             
-            <div className="w-14 h-14 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex-shrink-0">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex-shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
@@ -115,18 +115,18 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
               />
             </div>
 
-            <div className="ml-2">
-              <h3 className="text-2xl font-bold text-white tracking-tight">{member.name}</h3>
-              <p className="text-sm text-white/60 mt-1">{member.title}</p>
+            <div className="flex-1 min-w-0 ml-1">
+              <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight truncate">{member.name}</h3>
+              <p className="text-xs md:text-sm text-white/60 mt-0.5 truncate">{member.title}</p>
             </div>
           </div>
 
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
-            <div className="text-right bg-white/5 px-4 py-2 rounded-xl backdrop-blur-md border border-white/5">
-              <p className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-400">
+          <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-start w-full md:w-auto gap-3 flex-shrink-0 bg-white/5 md:bg-transparent px-4 py-3 md:p-0 rounded-2xl md:rounded-none">
+            <div className="md:text-right md:bg-white/5 md:px-4 md:py-2 md:rounded-xl md:backdrop-blur-md md:border border-white/5 flex items-baseline gap-2 md:block">
+              <p className="text-xl md:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-pink-400">
                 {member.message_count.toLocaleString()}
               </p>
-              <p className="text-[10px] uppercase tracking-wider text-white/40 mt-0.5">메시지</p>
+              <p className="text-xs md:text-[10px] md:uppercase text-white/40 md:mt-0.5 font-medium">메시지</p>
             </div>
 
             {/* Share card button */}
@@ -135,7 +135,7 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
               whileTap={{ scale: 0.95 }}
               onClick={handleShareCard}
               disabled={sharing}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`inline-flex w-full md:w-auto justify-center items-center gap-1.5 px-4 py-2.5 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-sm md:text-xs font-bold transition-all ${
                 shareOk
                   ? 'bg-emerald-500 text-black'
                   : sharing
@@ -150,8 +150,8 @@ export default function DetailedProfileCard({ member, rank }: DetailedProfileCar
               ) : (
                 <>
                   {typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
-                    ? <><Share2 className="w-3 h-3" /> 카드 공유</>
-                    : <><Download className="w-3 h-3" /> 카드 저장</>
+                    ? <><Share2 className="w-4 h-4 md:w-3 md:h-3" /> 카드 공유</>
+                    : <><Download className="w-4 h-4 md:w-3 md:h-3" /> 카드 저장</>
                   }
                 </>
               )}

@@ -52,7 +52,7 @@ const MemberShareCard = forwardRef<HTMLDivElement, MemberShareCardProps>(
           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase' }}>
             🤖 KANALYZE AI 분석카드
           </span>
-          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '10px' }}>kanalyze.vercel.app</span>
+          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '10px' }}>www.kanalyze.cloud</span>
         </div>
 
         {/* Main body */}
