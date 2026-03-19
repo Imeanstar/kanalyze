@@ -14,7 +14,7 @@ const STAGES: {
   key: LoadingStage;
   icon: React.ReactNode;
   label: string;
-  sub: string;
+  sub: string | string[];
 }[] = [
   {
     key: 'reading',
@@ -26,13 +26,26 @@ const STAGES: {
     key: 'parsing',
     icon: <Zap className="w-6 h-6" />,
     label: 'Top 10 수다쟁이 추출 중...',
-    sub: '누가 제일 말이 많은지 세고 있어요.',
+    sub: [
+      '누가 제일 말이 많은지 세고 있어요.',
+      '숨어있는 프로 토커를 발굴하는 중...',
+      '가장 많이 등장한 텍스트 패턴을 분석하고 있어요.',
+      '단톡방의 지배자가 누구인지 찾는 중...'
+    ],
   },
   {
     key: 'analyzing',
     icon: <Brain className="w-6 h-6" />,
     label: 'AI가 성격 분석 중...',
-    sub: 'Gemini AI가 대화 패턴을 심층 분석하고 있어요.',
+    sub: [
+      'Gemini AI가 대화 패턴을 심층 분석하고 있어요.',
+      '이 구역의 감성 장인을 찾고 있어요 ✨',
+      '조용한 암살자(눈팅족)들을 색출하고 있어요!',
+      '서로 주고받은 팩트폭행의 흔적을 찾는 중 ⚔️',
+      '대화 패턴에서 성격을 유추하는 중입니다 🧠',
+      'AI가 단톡방의 숨겨진 서사를 읽어내고 있습니다 📖',
+      '누가 가장 "ㅋㅋㅋ"를 많이 쳤는지 기싸움 중...'
+    ],
   },
   {
     key: 'saving',
@@ -52,6 +65,22 @@ const stageIndex: Record<LoadingStage, number> = {
 export default function LoadingScreen({ stage }: LoadingScreenProps) {
   const currentIdx = stageIndex[stage];
   const [particles, setParticles] = useState<{ x: number; y: number; id: number }[]>([]);
+  const [subMsgIndex, setSubMsgIndex] = useState(0);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSubMsgIndex(0);
+  }, [stage]);
+
+  useEffect(() => {
+    const currentSub = STAGES[currentIdx].sub;
+    if (Array.isArray(currentSub)) {
+      const interval = setInterval(() => {
+        setSubMsgIndex((prev) => (prev + 1) % currentSub.length);
+      }, 2500);
+      return () => clearInterval(interval);
+    }
+  }, [currentIdx]);
 
   useEffect(() => {
     const arr = Array.from({ length: 12 }, (_, i) => ({
@@ -129,13 +158,15 @@ export default function LoadingScreen({ stage }: LoadingScreenProps) {
           </AnimatePresence>
           <AnimatePresence mode="wait">
             <motion.p
-              key={stage + '-sub'}
+              key={stage + '-' + subMsgIndex}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-white/50 text-sm"
+              className="text-white/50 text-sm h-5"
             >
-              {STAGES[currentIdx].sub}
+              {Array.isArray(STAGES[currentIdx].sub)
+                ? (STAGES[currentIdx].sub as string[])[subMsgIndex]
+                : STAGES[currentIdx].sub}
             </motion.p>
           </AnimatePresence>
         </div>

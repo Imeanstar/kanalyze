@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Users, MessageSquare, Calendar, PieChart as PieChartIcon, Network, UserSquare2, Home, Lock, Play } from 'lucide-react';
+import { Share2, PieChart as PieChartIcon, Network, UserSquare2, Home, Lock, Play } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import ReactMarkdown from 'react-markdown';
 import ProfileCard from '@/components/ProfileCard';
@@ -324,6 +324,16 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                         <Tooltip content={renderTooltipContent} cursor={{ fill: 'transparent' }} isAnimationActive={false} />
                       </PieChart>
                     </ResponsiveContainer>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="flex flex-wrap justify-center gap-x-4 gap-y-3 mt-8 max-w-lg">
+                    {chartData.map((entry) => (
+                      <div key={entry.name} className="flex items-center gap-1.5 text-sm font-medium text-white/80">
+                        <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: entry.color }} />
+                        <span className="truncate max-w-[100px]">{entry.name}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
