@@ -8,6 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import ProfileCard from '@/components/ProfileCard';
 import DetailedProfileCard from '@/components/DetailedProfileCard';
 import AdBanner from '@/components/AdBanner';
+import SupportButton from '@/components/SupportButton';
 import RelationshipGraph from '@/components/RelationshipGraph';
 import type { AnalysisRow } from '@/lib/supabase';
 
@@ -211,14 +212,17 @@ export default function ResultClient({ analysis }: ResultClientProps) {
               {copied ? '✅ 복사됨! 카톡에 붙여넣기 하세요' : <><Share2 className="w-5 h-5" /> 단톡방에 결과 공유하기</>}
             </motion.button>
 
-            <motion.a
-              href="/"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="mt-1 inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 text-sm font-medium transition-all"
-            >
-              <Home className="w-4 h-4" /> 처음으로 돌아가기
-            </motion.a>
+            <div className="flex items-center gap-3 mt-1">
+              <motion.a
+                href="/"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 text-sm font-medium transition-all"
+              >
+                <Home className="w-4 h-4" /> 처음으로
+              </motion.a>
+              <SupportButton />
+            </div>
           </div>
         </motion.div>
 
@@ -382,8 +386,12 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                       )}
                     </div>
                   </div>
-                ) : renderLockedOverlay('relationship')}
-                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
+                ) : (
+                  <>
+                    <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
+                    {renderLockedOverlay('relationship')}
+                  </>
+                )}
               </div>
             )}
 
@@ -453,8 +461,12 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                       </div>
                     )}
                   </>
-                ) : renderLockedOverlay('detailed')}
-                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
+                ) : (
+                  <>
+                    <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
+                    {renderLockedOverlay('detailed')}
+                  </>
+                )}
               </div>
             )}
           </motion.div>

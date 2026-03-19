@@ -170,29 +170,42 @@ export default function UploadZone({
               이 대화 내역으로 분석을 시작할까요?
             </p>
 
-            <div className="flex w-full gap-3 justify-center">
-              <motion.button
-                whileHover={{ scale: selectedFile.size > 50_000_000 ? 1 : 1.05 }}
-                whileTap={{ scale: selectedFile.size > 50_000_000 ? 1 : 0.95 }}
-                disabled={selectedFile.size > 50_000_000}
-                onClick={startAnalysis}
-                className="flex-1 max-w-[200px] flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-violet-600 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Play className="w-4 h-4 fill-current" />
-                {selectedFile.size > 50_000_000 ? '용량 초과 (50MB 이하)' : '분석 시작하기'}
-              </motion.button>
-              
-              <button
-                onClick={() => {
-                  setSelectedFile(null);
-                  setErrorMsg('');
-                  if (inputRef.current) inputRef.current.value = '';
-                }}
-                className="px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 rounded-xl transition-colors"
-                aria-label="취소"
-              >
-                <X className="w-5 h-5" />
-              </button>
+            <div className="flex w-full flex-col items-center gap-4">
+              <div className="flex w-full gap-3 justify-center">
+                <motion.button
+                  whileHover={{ scale: selectedFile.size > 50_000_000 ? 1 : 1.05 }}
+                  whileTap={{ scale: selectedFile.size > 50_000_000 ? 1 : 0.95 }}
+                  disabled={selectedFile.size > 50_000_000}
+                  onClick={startAnalysis}
+                  className="flex-1 max-w-[240px] flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-violet-600 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  {selectedFile.size > 50_000_000 ? '용량 초과 (50MB 이하)' : '분석 시작하기'}
+                </motion.button>
+                
+                <button
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setErrorMsg('');
+                    if (inputRef.current) inputRef.current.value = '';
+                  }}
+                  className="px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 rounded-xl transition-colors"
+                  aria-label="취소"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {selectedFile.size <= 50_000_000 && (
+                <div className="flex flex-col items-center gap-1.5 opacity-60">
+                  <span className="text-xs font-medium text-violet-300">
+                    ⏱️ 예상 분석 소요 시간: 약 {Math.floor(10 + (selectedFile.size / (1024 * 1024)) * 2)}초
+                  </span>
+                  <span className="text-[10px] text-white/40">
+                    (AI 분석 중 창을 닫지 말아주세요)
+                  </span>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

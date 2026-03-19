@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: 'Kanalyze',
     images: [
       {
-        url: '/og-default.png',
+        url: 'https://www.kanalyze.cloud/og-default.png',
         width: 1200,
         height: 630,
         alt: 'Kanalyze AI 카카오톡 분석기',
