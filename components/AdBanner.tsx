@@ -1,10 +1,23 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useId, useState } from 'react';
 import { motion } from 'framer-motion';
 
-export default function AdBanner() {
+interface AdBannerProps {
+  unit?: string;
+  width?: number;
+  height?: number;
+}
+
+export default function AdBanner({
+  unit = 'DAN-58vQ78e9HE4gxDXl',
+  width = 320,
+  height = 100,
+}: AdBannerProps) {
   const scriptElement = useRef<HTMLScriptElement | null>(null);
+  const idValue = useId().replace(/:/g, '');
+  const wrapperId = `kakao-ad-${idValue}`;
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     // Inject the Kakao Adfit script dynamically on the client
@@ -14,10 +27,12 @@ export default function AdBanner() {
     script.setAttribute('async', 'true');
     
     // Get the wrapper and append the script
-    const container = document.getElementById('kakao-ad-wrapper');
+    const container = document.getElementById(wrapperId);
     if (container && !scriptElement.current) {
       container.appendChild(script);
       scriptElement.current = script;
+      // Mark as loaded slightly after mount to hide fallback
+      setTimeout(() => setIsLoaded(true), 1500);
     }
 
     return () => {
@@ -27,14 +42,15 @@ export default function AdBanner() {
         scriptElement.current = null;
       }
     };
-  }, []);
+  }, [wrapperId]);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-[320px] mx-auto my-8 relative group"
+      style={{ maxWidth: width }}
+      className="w-full mx-auto my-8 relative group"
     >
       <div className="flex flex-col items-center">
         <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1.5 flex items-center justify-center gap-1.5 w-full">
@@ -45,21 +61,24 @@ export default function AdBanner() {
         
         {/* Ad Container */}
         <div 
-          id="kakao-ad-wrapper" 
-          className="min-w-[320px] min-h-[100px] bg-white/[0.02] border border-white/[0.05] rounded-xl flex items-center justify-center relative overflow-hidden transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-white/10"
+          id={wrapperId}
+          style={{ minWidth: width, minHeight: height }}
+          className="bg-white/[0.02] border border-white/[0.05] rounded-xl flex items-center justify-center relative overflow-hidden transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-white/10"
         >
           {/* Fallback/Loading state (hidden once ad loads) */}
-          <p className="text-white/20 text-xs font-medium absolute z-0 pointer-events-none text-center leading-relaxed">
-            광고를 불러오는 중입니다<br/>(AdFit 연동 완료)
-          </p>
+          {!isLoaded && (
+            <p className="text-white/20 text-xs font-medium absolute z-0 pointer-events-none text-center leading-relaxed">
+              광고를 불러오는 중입니다<br/>(AdFit 연동 완료)
+            </p>
+          )}
 
           {/* Kakao AdFit INS tag */}
           <ins 
             className="kakao_ad_area relative z-10" 
             style={{ display: 'none' }}
-            data-ad-unit="DAN-58vQ78e9HE4gxDXl"
-            data-ad-width="320"
-            data-ad-height="100"
+            data-ad-unit={unit}
+            data-ad-width={width}
+            data-ad-height={height}
           />
         </div>
       </div>

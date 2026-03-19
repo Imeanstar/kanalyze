@@ -42,20 +42,31 @@ function parseKakaoTxt(text) {
     const raw = lines[i].trim();
     if (!raw) continue;
 
-    if (DATE_LINE_RE.test(raw)) {
+    if (DATE_LINE_RE.test(raw) || MOBILE_DATE_LINE_RE.test(raw)) {
       const d = raw.replace(/-+/g, '').trim();
       if (!firstDate) firstDate = d;
       lastDate = d;
       continue;
     }
 
-    const m = MSG_LINE_RE.exec(raw);
-    if (!m) continue;
-
-    const name    = m[1].trim();
-    const period  = m[2];
-    const hour    = parseInt(m[3], 10);
-    const content = m[5];
+    let name, period, hour, content;
+    let m = MSG_LINE_RE.exec(raw);
+    if (m) {
+      name    = m[1].trim();
+      period  = m[2];
+      hour    = parseInt(m[3], 10);
+      content = m[5];
+    } else {
+      m = MOBILE_MSG_LINE_RE.exec(raw);
+      if (m) {
+        period  = m[1];
+        hour    = parseInt(m[2], 10);
+        name    = m[4].trim();
+        content = m[5];
+      } else {
+        continue;
+      }
+    }
 
     const SKIP = ['이모티콘','사진','동영상','파일','음성메시지','삭제된 메시지'];
     if (SKIP.includes(content) || content.startsWith('<')) continue;
@@ -91,13 +102,24 @@ function parseKakaoTxt(text) {
   for (let i = 0; i < lines.length; i++) {
     const raw = lines[i].trim();
     if (!raw) continue;
-    const m = MSG_LINE_RE.exec(raw);
-    if (!m) continue;
+    
+    let name, content;
+    let m = MSG_LINE_RE.exec(raw);
+    if (m) {
+      name = m[1].trim();
+      content = m[5];
+    } else {
+      m = MOBILE_MSG_LINE_RE.exec(raw);
+      if (m) {
+        name = m[4].trim();
+        content = m[5];
+      } else {
+        continue;
+      }
+    }
 
-    const name = m[1].trim();
     if (!top10Names.includes(name)) continue;
 
-    const content = m[5];
     const SKIP = ['이모티콘','사진','동영상','파일','음성메시지','삭제된 메시지'];
     if (SKIP.includes(content) || content.startsWith('<')) continue;
 
