@@ -46,8 +46,8 @@ export default function ResultClient({ analysis }: ResultClientProps) {
   const totalMessages = top10Total + othersCount;
 
   const handleShare = async () => {
-    const resultUrl = window.location.href;
-    const serviceUrl = window.location.origin;
+    const resultUrl = window.location.href.includes('?') ? window.location.href : window.location.href + '?ref=share';
+    const serviceUrl = window.location.origin + '?ref=share';
 
     const top3 = members.slice(0, 3);
     const rankEmojis = ['👑', '🥈', '🥉'];
@@ -386,12 +386,8 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                       )}
                     </div>
                   </div>
-                ) : (
-                  <>
-                    <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
-                    {renderLockedOverlay('relationship')}
-                  </>
-                )}
+                ) : renderLockedOverlay('relationship')}
+                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
               </div>
             )}
 
@@ -461,12 +457,8 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                       </div>
                     )}
                   </>
-                ) : (
-                  <>
-                    <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
-                    {renderLockedOverlay('detailed')}
-                  </>
-                )}
+                ) : renderLockedOverlay('detailed')}
+                <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
               </div>
             )}
           </motion.div>
