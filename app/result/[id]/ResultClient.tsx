@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, PieChart as PieChartIcon, Network, UserSquare2, Home, Lock, Play } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import ReactMarkdown from 'react-markdown';
 import ProfileCard from '@/components/ProfileCard';
 import DetailedProfileCard from '@/components/DetailedProfileCard';
 import AdBanner from '@/components/AdBanner';
@@ -349,13 +350,7 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                 
                 <div className="space-y-4">
                   {members.map((member, i) => (
-                    <ProfileCard 
-                      key={member.name} 
-                      member={member} 
-                      rank={i + 1} 
-                      totalMessages={totalMessages}
-                      totalSpeakers={data.total_speakers || (members.length + (othersCount > 0 ? Math.round(othersCount / 100) + 1 : 0))}
-                    />
+                    <ProfileCard key={member.name} member={member} rank={i + 1} />
                   ))}
                 </div>
               </div>
@@ -376,7 +371,19 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                     </div>
 
                     <div className="overflow-x-auto relative z-10 custom-scrollbar pb-4 min-h-[400px]">
-                      <RelationshipGraph edges={data.relationship_map} />
+                      {Array.isArray(data.relationship_map) ? (
+                        <RelationshipGraph edges={data.relationship_map} />
+                      ) : (
+                        <div className="min-w-[700px] prose prose-invert prose-p:my-1 prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 font-mono text-[15px] leading-relaxed text-emerald-400 drop-shadow-[0_0_2px_rgba(52,211,153,0.8)]">
+                          {data.relationship_map ? (
+                            <ReactMarkdown>{data.relationship_map}</ReactMarkdown>
+                          ) : (
+                            <div className="py-32 text-center text-emerald-400/50 blink font-bold text-xl">
+                              [ERROR] 데이터가 부족하거나 분석 중 문제가 발생했습니다.
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : renderLockedOverlay('relationship')}
