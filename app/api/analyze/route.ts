@@ -169,19 +169,20 @@ async function generateWithRetry(prompt: string): Promise<string> {
 function extractJsonString(rawText: string): any {
   let jsonString = rawText.trim();
   
-  // 1. Remove markdown code blocks if present
-  const mdMatch = jsonString.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (mdMatch) {
-    jsonString = mdMatch[1].trim();
-  } else if (jsonString.startsWith('```')) {
-    jsonString = jsonString.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
-  }
-
-  // 2. Extract strictly from first '{' to last '}'
-  const firstBrace = jsonString.indexOf('{');
-  const lastBrace = jsonString.lastIndexOf('}');
-  if (firstBrace !== -1 && lastBrace !== -1) {
-    jsonString = jsonString.substring(firstBrace, lastBrace + 1);
+  // Remove markdown codeblock wrappers ONLY if they wrap the entire JSON
+  if (jsonString.startsWith('```')) {
+    const firstBraceMatch = jsonString.indexOf('{');
+    const lastBraceMatch = jsonString.lastIndexOf('}');
+    if (firstBraceMatch !== -1 && lastBraceMatch !== -1 && lastBraceMatch > firstBraceMatch) {
+      jsonString = jsonString.substring(firstBraceMatch, lastBraceMatch + 1);
+    }
+  } else {
+    // 2. Extract strictly from first '{' to last '}' (This safely ignores surrounding text)
+    const firstBrace = jsonString.indexOf('{');
+    const lastBrace = jsonString.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      jsonString = jsonString.substring(firstBrace, lastBrace + 1);
+    }
   }
 
   // 먼저 정상적인 파싱 시도
