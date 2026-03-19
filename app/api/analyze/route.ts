@@ -65,7 +65,7 @@ ${mentionsText}
 아래 JSON 형식으로만 응답하세요 (설명 없이 JSON만. 코드 블록(\`\`\`json) 기호도 절대 쓰지 말고 오직 순수 JSON 텍스트 상태로 반환하세요. 줄바꿈(\\n)과 따옴표(")는 반드시 이스케이프 처리하세요):
 { 
   "group_summary": "단톡방 전체 분위기 한 줄 요약 (재미있고 날카롭게)",
-  "relationship_map": "마크다운 코드블록 없이 띄어쓰기와 줄바꿈(\\n)이 완벽히 적용된 순수 ASCII 아트 텍스트 문자열"
+  "relationship_map": "ASCII 트리 위에 2~3줄짜리 간단명료한 관계 해석/설명을 먼저 적고, 이어서 순수 ASCII 아트 텍스트 트리를 작성해주세요. 마크다운 코드블록 없이 통째로 작성하며 줄바꿈(\\n)은 완벽히 이스케이프 시키세요."
 }`;
 }
 
@@ -136,7 +136,7 @@ async function generateWithRetry(prompt: string): Promise<string> {
           config: { 
             temperature: 0.85, 
             maxOutputTokens: 8192,
-            // v1 API에서는 responseMimeType 미지원으로 제거
+            responseMimeType: "application/json",
           },
         });
         return response.text ?? '';
@@ -311,6 +311,7 @@ export async function POST(req: NextRequest) {
           ...parsed,
           name: parsed.name || member.name, 
           message_count: member.message_count,
+          active_time: member.active_time,
         };
       } catch (err) {
         console.error(`Member analysis failed for ${member.name}:`, err);
@@ -330,6 +331,7 @@ export async function POST(req: NextRequest) {
       relationship_map: relationshipMap,
       members: successfulMembers,
       others_message_count: group_stats.others_message_count,
+      total_speakers: group_stats.total_speakers,
     };
 
     // Supabase 저장

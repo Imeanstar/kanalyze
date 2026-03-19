@@ -11,12 +11,14 @@ export interface AnalysisData {
   relationship_map?: string;
   members: MemberAnalysis[];
   others_message_count?: number;
+  total_speakers?: number;
 }
 
 export interface MemberAnalysis {
   name: string;
   message_count: number;
   title: string;
+  active_time?: string;
   traits?: Trait[];
   detailed_markdown?: string;
 }

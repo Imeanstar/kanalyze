@@ -350,7 +350,13 @@ export default function ResultClient({ analysis }: ResultClientProps) {
                 
                 <div className="space-y-4">
                   {members.map((member, i) => (
-                    <ProfileCard key={member.name} member={member} rank={i + 1} />
+                    <ProfileCard 
+                      key={member.name} 
+                      member={member} 
+                      rank={i + 1} 
+                      totalMessages={totalMessages}
+                      totalSpeakers={data.total_speakers || (members.length + (othersCount > 0 ? Math.round(othersCount / 100) + 1 : 0))}
+                    />
                   ))}
                 </div>
               </div>
