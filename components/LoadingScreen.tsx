@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Zap, ChartBar } from 'lucide-react';
 import AdBanner from '@/components/AdBanner';
 
-type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving';
+type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving' | 'cached';
 
 interface LoadingScreenProps {
   stage: LoadingStage;
@@ -54,6 +54,12 @@ const STAGES: {
     label: '결과 저장 중...',
     sub: '분석 완료! 결과 페이지를 준비하고 있어요.',
   },
+  {
+    key: 'cached',
+    icon: <Zap className="w-6 h-6 text-yellow-400" />,
+    label: '결과 즉시 로드!',
+    sub: '이전에 분석한 데이터를 확인했어요. 데이터를 즉시 불러올게요 ⚡',
+  },
 ];
 
 const stageIndex: Record<LoadingStage, number> = {
@@ -61,6 +67,7 @@ const stageIndex: Record<LoadingStage, number> = {
   parsing: 1,
   analyzing: 2,
   saving: 3,
+  cached: 4,
 };
 
 export default function LoadingScreen({ stage }: LoadingScreenProps) {

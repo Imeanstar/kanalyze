@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import UploadZone from '@/components/UploadZone';
 import LoadingScreen from '@/components/LoadingScreen';
 
-type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving';
+type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving' | 'cached';
 
 export default function HomePage() {
   const router = useRouter();
@@ -54,7 +54,13 @@ export default function HomePage() {
           throw new Error(parsed.error || `API 오류 (${res.status})`);
         }
 
-        const { id } = parsed as { id: string };
+        const { id, cached } = parsed as { id: string; cached?: boolean };
+        
+        if (cached) {
+          setLoadingStage('cached');
+          await new Promise(r => setTimeout(r, 2000));
+        }
+        
         router.push(`/result/${id}`);
       } catch (err) {
         setIsLoading(false);
