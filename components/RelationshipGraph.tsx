@@ -14,10 +14,11 @@ interface RelationshipGraphProps {
 }
 
 export default function RelationshipGraph({ aiSummary, members }: RelationshipGraphProps) {
+  // Unescape literal \n strings if returned by AI
+  const decodedSummary = (aiSummary || '').replace(/\\n/g, '\n');
+
   // Extract only clean text lines (not ASCII-art symbol lines)
-  // AI sometimes escapes newlines explicitly as '\\n' inside the JSON string
-  const decoded = (aiSummary || '').replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
-  const lines = decoded.split('\n').filter(l => l.trim().length > 0);
+  const lines = decodedSummary.split('\n').filter(l => l.trim().length > 0);
   const quote = lines.find(l => !/^[\s/\\|\-.()[\]─━┃+*=<>]+$/.test(l)) || '대화 속에서 피어난 끈끈한 관계들입니다.';
 
   // Calculate pair interaction counts
