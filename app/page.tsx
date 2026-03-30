@@ -167,9 +167,25 @@ export default function HomePage() {
           ))}
         </motion.div>
 
-        <div className="max-w-xl w-full">
+        <div className="max-w-xl w-full mt-12">
           <AdBanner />
         </div>
+
+        {/* Footer / Contact */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-12 flex flex-col items-center gap-2"
+        >
+          <a
+            href="mailto:mike4404@naver.com?subject=[Kanalyze]%20문의/제안사항"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+          >
+            📬 제작자에게 버그 제보 / 의견 제안하기
+          </a>
+          <p className="text-xs text-white/30 text-center">클릭 시 기본 메일 앱(mike4404@naver.com)이 열립니다.</p>
+        </motion.div>
       </div>
     </main>
   );
