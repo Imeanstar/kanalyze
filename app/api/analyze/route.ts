@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
+import crypto from 'crypto';
 
 // Vercel/Next.js 타임아웃 연장 (재시도 대기 포함 최대 5분)
 export const maxDuration = 300;
@@ -316,6 +317,30 @@ export async function POST(req: NextRequest) {
     if (!top10 || top10.length === 0) {
       return NextResponse.json({ error: '분석할 데이터가 없습니다.' }, { status: 400 });
     }
+
+    // --- Caching Layer: Generate Deterministic Signature ---
+    const signatureBase = {
+      total_messages: group_stats.total_messages,
+      total_speakers: group_stats.total_speakers,
+      date_range: group_stats.date_range,
+      top10: top10.map(m => ({ name: m.name, count: m.message_count }))
+    };
+    const signature = crypto.createHash('sha256').update(JSON.stringify(signatureBase)).digest('hex');
+
+    // Check if exactly this chat has been analyzed before
+    const { data: existingAnalysis, error: cacheError } = await supabase
+      .from('analyses')
+      .select('id')
+      .eq('data->>signature', signature)
+      .maybeSingle();
+
+    if (!cacheError && existingAnalysis) {
+      console.log(`[Cache Hit] Signature matched instantly for: ${signature}`);
+      return NextResponse.json({ id: existingAnalysis.id, cached: true });
+    }
+    console.log(`[Cache Miss] Starting new Gemini API Analysis for: ${signature}`);
+    // --------------------------------------------------------
+
     // 1. 단체방 요약 및 관계도 (1회 호출)
     const summaryPrompt = buildGroupSummaryPrompt(group_stats, top10);
     const summaryRaw = await generateWithRetry(summaryPrompt);
@@ -356,6 +381,7 @@ export async function POST(req: NextRequest) {
     }
 
     const analysisData = {
+      signature,
       group_summary: groupSummary,
       relationship_map: relationshipMap,
       members: successfulMembers,
