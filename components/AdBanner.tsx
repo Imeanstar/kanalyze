@@ -63,7 +63,7 @@ export default function AdBanner({
         <div 
           id={wrapperId}
           style={{ minWidth: width, minHeight: height }}
-          className="bg-white/[0.02] border border-white/[0.05] rounded-xl flex items-center justify-center relative overflow-hidden transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-white/10"
+          className="bg-white/[0.02] border border-white/[0.05] flex items-center justify-center relative transition-all duration-300 group-hover:bg-white/[0.04] group-hover:border-white/10"
         >
           {/* Fallback/Loading state (hidden once ad loads) */}
           {!isLoaded && (
