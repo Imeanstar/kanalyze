@@ -187,7 +187,7 @@ export default function HomePage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">이용 방법 및 주요 기능</h2>
             <ul className="list-disc list-inside space-y-2 ml-2 opacity-80">
-              <li><strong>대화 내보내기:</strong> 모바일 앱이나 PC 버전에서 분석하고 싶은 단체 채팅방의 '대화 내보내기(텍스트만)'를 수행합니다.</li>
+              <li><strong>대화 내보내기:</strong> 모바일 앱이나 PC 버전에서 분석하고 싶은 단체 채팅방의 &apos;대화 내보내기(텍스트만)&apos;를 수행합니다.</li>
               <li><strong>파일 업로드:</strong> 다운로드된 카카오톡 .txt 파일을 화면 중앙 영역에 드래그 앤 드롭하시면 자동으로 1차 데이터 파싱이 시작됩니다.</li>
               <li><strong>AI 성격 진단:</strong> 각 멤버별로 가장 많이 사용한 단어, 핵심 역할, 즐겨 쓰는 문장 등 실제 대화 예시를 인용한 전문적인 프로필이 생성됩니다.</li>
               <li><strong>관계의 거미줄:</strong> 대화 내역의 언급량과 흐름을 토대로 구성원 간의 사회적 관계도(ASCII 아트)를 정리해 한 눈에 볼 수 있게 그려줍니다.</li>

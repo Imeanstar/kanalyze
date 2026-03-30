@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Zap, ChartBar } from 'lucide-react';
-import AdBanner from '@/components/AdBanner';
 
 type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving' | 'cached';
 
