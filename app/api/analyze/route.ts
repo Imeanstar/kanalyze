@@ -327,16 +327,16 @@ export async function POST(req: NextRequest) {
     };
     const signature = crypto.createHash('sha256').update(JSON.stringify(signatureBase)).digest('hex');
 
-    // Check if exactly this chat has been analyzed before
-    const { data: existingAnalysis, error: cacheError } = await supabase
+    // Check if exactly this chat has been analyzed before (limit 1 to prevent multiple-row errors)
+    const { data: existingAnalysisRows, error: cacheError } = await supabase
       .from('analyses')
       .select('id')
-      .eq('data->>signature', signature)
-      .maybeSingle();
+      .contains('data', { signature }) // Safer JSONB query
+      .limit(1);
 
-    if (!cacheError && existingAnalysis) {
+    if (!cacheError && existingAnalysisRows && existingAnalysisRows.length > 0) {
       console.log(`[Cache Hit] Signature matched instantly for: ${signature}`);
-      return NextResponse.json({ id: existingAnalysis.id, cached: true });
+      return NextResponse.json({ id: existingAnalysisRows[0].id, cached: true });
     }
     console.log(`[Cache Miss] Starting new Gemini API Analysis for: ${signature}`);
     // --------------------------------------------------------

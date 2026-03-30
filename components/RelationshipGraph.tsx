@@ -15,7 +15,9 @@ interface RelationshipGraphProps {
 
 export default function RelationshipGraph({ aiSummary, members }: RelationshipGraphProps) {
   // Extract only clean text lines (not ASCII-art symbol lines)
-  const lines = (aiSummary || '').split('\n').filter(l => l.trim().length > 0);
+  // AI sometimes escapes newlines explicitly as '\\n' inside the JSON string
+  const decoded = (aiSummary || '').replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
+  const lines = decoded.split('\n').filter(l => l.trim().length > 0);
   const quote = lines.find(l => !/^[\s/\\|\-.()[\]─━┃+*=<>]+$/.test(l)) || '대화 속에서 피어난 끈끈한 관계들입니다.';
 
   // Calculate pair interaction counts

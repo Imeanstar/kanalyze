@@ -68,12 +68,12 @@ export default function ProfileCard({ member, rank }: ProfileCardProps) {
             <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${rankStyle.badge} flex-shrink-0 z-10 shadow-md`}>
               {rank <= 3 ? ['👑', '🥈', '🥉'][rank - 1] : `#${rank}`}
             </div>
-            
+
             {/* Avatar */}
             <div className="w-12 h-12 rounded-full border-2 border-white/20 bg-white/5 overflow-hidden flex-shrink-0 -ml-6 shadow-md">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`} 
+              <img
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(member.name)}&backgroundColor=transparent`}
                 alt={`${member.name} avatar`}
                 className="w-full h-full object-cover"
               />
