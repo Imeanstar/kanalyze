@@ -114,15 +114,13 @@ export default function RelationshipGraph({ aiSummary, members }: RelationshipGr
                     <div className="w-2 h-2 rounded-full bg-violet-500/50 absolute left-0" />
                     <div className="absolute inset-x-2 h-px bg-gradient-to-r from-violet-500/20 via-pink-500/50 to-violet-500/20" />
                        {/* Animated dot */}
-                       {i === 0 && (
-                         <div className="absolute inset-x-2 h-full overflow-hidden">
-                           <motion.div 
-                             animate={{ x: ['-100%', '1000%'] }} 
-                             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                             className="absolute top-1/2 -translate-y-1/2 w-8 h-px bg-white shadow-[0_0_8px_2px_rgba(255,255,255,0.8)]" 
-                           />
-                         </div>
-                       )}
+                       <div className="absolute inset-x-2 h-full overflow-hidden">
+                         <motion.div 
+                           animate={{ x: ['-100%', '1000%'] }} 
+                           transition={{ duration: 2.5 + i * 0.5, repeat: Infinity, ease: 'linear', delay: i * 0.3 }}
+                           className="absolute top-1/2 -translate-y-1/2 w-8 h-px bg-white shadow-[0_0_8px_2px_rgba(255,255,255,0.8)]" 
+                         />
+                       </div>
                     <div className="w-2 h-2 rounded-full bg-pink-500/50 absolute right-0" />
                   </div>
                 </div>
@@ -140,14 +138,14 @@ export default function RelationshipGraph({ aiSummary, members }: RelationshipGr
 
       {/* Most Mentioned */}
       {topMentioned.length > 0 && (
-        <div className="mt-8 mb-12">
-          <div className="flex items-center justify-center gap-3 mb-16">
+        <div className="mt-12 mb-12">
+          <div className="flex items-center justify-center gap-3 mb-24">
             <span className="text-2xl">👑</span>
             <h3 className="text-2xl font-black text-yellow-400 drop-shadow-[0_0_5px_rgba(250,204,21,0.5)]">단톡방의 중심 (인싸 랭킹)</h3>
             <span className="text-2xl">👑</span>
           </div>
 
-          <div className="flex items-end justify-center gap-2 md:gap-4 h-56">
+          <div className="flex items-end justify-center gap-2 md:gap-4 h-64 mt-12">
             {[1, 0, 2].map((orderedIndex) => {
               const user = topMentioned[orderedIndex];
               if (!user) return <div key={orderedIndex} className="w-24 md:w-32" />; // empty slot

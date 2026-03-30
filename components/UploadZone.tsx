@@ -199,7 +199,15 @@ export default function UploadZone({
               {selectedFile.size <= 50_000_000 && (
                 <div className="flex flex-col items-center gap-1.5 opacity-60">
                   <span className="text-xs font-medium text-violet-300">
-                    ⏱️ 예상 분석 소요 시간: 약 {Math.floor(20 + (selectedFile.size / (1024 * 1024)) * 1.5)}초
+                    ⏱️ 예상 분석 소요 시간: {
+                      (() => {
+                        const estimatedSeconds = Math.floor(35 + (selectedFile.size / (1024 * 1024)) * 8);
+                        if (estimatedSeconds > 60) {
+                          return `약 ${Math.floor(estimatedSeconds / 60)}분 ${estimatedSeconds % 60}초`;
+                        }
+                        return `약 ${estimatedSeconds}초`;
+                      })()
+                    }
                   </span>
                   <span className="text-[10px] text-white/40">
                     (AI 분석 중 창을 닫지 말아주세요)
