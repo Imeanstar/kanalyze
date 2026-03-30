@@ -35,10 +35,10 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
 });
 
-// ── Prompt builder (경량화 버전) ───────────────────────────────────────────────
-// 수정된 부분: 샘플 200줄 → 80줄로 축소, 불필요한 프롬프트 설명 제거
+// ── Prompt builder ───────────────────────────────────────────────
+// 수정된 부분: 캐싱 도입에 따라 비용/시간 부담이 줄어 샘플 수를 대폭 상향 (80 -> 1000)
 
-const SAMPLE_LINES = 80; // 멤버당 최대 샘플 줄 수
+const SAMPLE_LINES = 1000; // 멤버당 최대 샘플 줄 수
 
 function buildGroupSummaryPrompt(group_stats: GroupStats, top10: Top10Member[]): string {
   const mentionsText = top10.map(m => {

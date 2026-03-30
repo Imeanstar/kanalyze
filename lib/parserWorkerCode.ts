@@ -93,8 +93,14 @@ function parseKakaoTxt(text) {
     const s = speakers.get(name);
     s.message_count++;
     s.hourly[toHour24(period, hour)]++;
-    if (s.samples.length < 200 && content.length > 5) {
-      s.samples.push(name + ': ' + content);
+    
+    if (content.length > 3) {
+      if (s.samples.length < 1000) {
+        s.samples.push(name + ': ' + content);
+      } else if (Math.random() < 1000 / s.message_count) {
+        const replaceIdx = Math.floor(Math.random() * 1000);
+        s.samples[replaceIdx] = name + ': ' + content;
+      }
     }
   }
 
