@@ -1,111 +1,193 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
+interface Top10Member {
+  name: string;
+  message_count: number;
+  mentions?: Record<string, number>;
+}
+
 interface RelationshipGraphProps {
-  // Can be string (new API) or array (old API)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  edges: any;
+  aiSummary: string;
+  members: Top10Member[];
 }
 
-/**
- * 설명 텍스트(초록)와 ASCII 아트(흰색)를 분리합니다.
- * AI가 생성하는 relationship_map 형식:
- *   [2~3줄 관계 해석 텍스트]
- *   [빈 줄]
- *   [ASCII 아트 다이어그램]
- */
-function splitDescriptionAndArt(content: string): { description: string; art: string } {
-  const lines = content.split('\n');
+export default function RelationshipGraph({ aiSummary, members }: RelationshipGraphProps) {
+  // Extract AI quote correctly
+  const lines = (aiSummary || '').split('\n').filter(l => l.trim().length > 0);
+  const quote = lines.find(l => !/^[\s/\\|\-.()\[\]─━┃+*=<>]+$/.test(l)) || "대화 속에서 피어난 끈끈한 관계들입니다.";
 
-  // 1순위: 첫 번째 빈 줄을 구분점으로 사용
-  const blankIdx = lines.findIndex(l => l.trim() === '');
-  if (blankIdx > 0) {
-    const description = lines.slice(0, blankIdx).join('\n').trim();
-    // 빈 줄 이후부터 art (선두 빈 줄 제거)
-    let artStart = blankIdx + 1;
-    while (artStart < lines.length && lines[artStart].trim() === '') artStart++;
-    const art = lines.slice(artStart).join('\n');
-    if (description && art) return { description, art };
-  }
+  // Calculate pairs
+  const edgesMap: Record<string, number> = {};
+  const incomingMentions: Record<string, number> = {};
 
-  // 2순위: 빈 줄 없으면 ASCII 아트 시작 줄을 탐지
-  for (let i = 1; i < lines.length; i++) {
-    const raw = lines[i];
-    const t = raw.trim();
-    if (!t) continue;
+  members.forEach(m => {
+    if (!m.mentions) return;
+    Object.entries(m.mentions).forEach(([target, count]) => {
+      const pair = [m.name, target].sort().join('|||');
+      edgesMap[pair] = (edgesMap[pair] || 0) + count;
+      incomingMentions[target] = (incomingMentions[target] || 0) + count;
+    });
+  });
 
-    // 거의 기호/공백만으로 이루어진 줄 (순수 아트 라인)
-    if (/^[\s/\\|\-.()\[\]─━┃+*=<>]+$/.test(raw)) {
-      return { description: lines.slice(0, i).join('\n').trim(), art: lines.slice(i).join('\n') };
-    }
-    // [이름] 형태로 시작하는 노드 라인
-    if (/^\s*\[/.test(raw)) {
-      return { description: lines.slice(0, i).join('\n').trim(), art: lines.slice(i).join('\n') };
-    }
-  }
+  const topDuos = Object.entries(edgesMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([pairStr, count]) => {
+      const [p1, p2] = pairStr.split('|||');
+      return { p1, p2, count };
+    });
 
-  // 분리 불가: 전체를 아트로 처리
-  return { description: '', art: content };
-}
+  const topMentioned = Object.entries(incomingMentions)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
 
-export default function RelationshipGraph({ edges }: RelationshipGraphProps) {
-  if (!edges || (Array.isArray(edges) && edges.length === 0)) {
+  if (topDuos.length === 0) {
     return (
-      <div className="py-32 text-center text-emerald-400/50 font-bold text-xl">
-        결과를 표시할 수 없는 데이터 형식입니다.
-        <div className="text-sm mt-2 font-normal">새로 분석을 진행하시면 멋진 관계도를 볼 수 있습니다!</div>
+      <div className="py-20 text-center text-white/50">
+        충분한 대화 데이터가 없어 관계도를 구성하지 못했습니다.
       </div>
     );
   }
 
-  // Handle older array-based data gracefully by mapping to text
-  let content = '';
-  if (Array.isArray(edges)) {
-    content = edges.map(e => `[${e.source}] ────(${e.label})────▶ [${e.target}]`).join('\n');
-  } else if (typeof edges === 'string') {
-    content = edges;
-  } else {
-    content = JSON.stringify(edges, null, 2);
-  }
-
-  // Ensure robust unescaping: \\ → \ must come first, then \n → newline
-  const displayContent = content
-    .replace(/\\\\/g, '\\')
-    .replace(/\\n/g, '\n')
-    .replace(/\\"/g, '"');
-
-  const { description, art } = splitDescriptionAndArt(displayContent);
+  const podiumColors = [
+    'from-yellow-400 to-orange-500', 
+    'from-slate-300 to-slate-500', 
+    'from-amber-600 to-amber-800'
+  ];
 
   return (
-    <div className="w-full flex justify-center py-4">
-      {/* CLI Terminal Container */}
-      <div className="w-full max-w-4xl bg-[#0d0d12] rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col">
-        {/* Terminal Header */}
-        <div className="bg-[#1a1a24] px-4 py-2 border-b border-white/5 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
-          <span className="ml-2 text-xs font-mono text-white/40">kanalyze_relationship_map.txt</span>
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-16 py-8">
+      {/* AI Quote */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-6 md:p-10 text-center shadow-lg mx-4"
+      >
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0f111a] px-4 py-0.5 text-xs font-bold text-violet-400 tracking-widest border border-violet-500/30 rounded-full">
+          AI 관계 요약
         </div>
+        <p className="text-[15px] md:text-lg font-medium text-emerald-300 italic leading-relaxed break-keep-all">
+          "{quote}"
+        </p>
+      </motion.div>
 
-        {/* Terminal Body */}
-        <div className="p-4 md:p-8 overflow-x-auto custom-scrollbar bg-[#0f111a]">
-          {/* 설명 텍스트: 초록색 터미널 스타일 */}
-          {description && (
-            <p className="font-mono text-[13px] md:text-[15px] leading-relaxed text-emerald-400 drop-shadow-[0_0_2px_rgba(52,211,153,0.8)] mb-6 whitespace-pre-wrap">
-              {description}
-            </p>
-          )}
-          {/* ASCII 아트: 흰색 고정폭 */}
-          {art && (
-            <pre
-              className="font-mono text-[12px] md:text-[15px] leading-[1.6] text-[#e2e8f0] tracking-wider whitespace-pre"
-              style={{ fontFamily: "'Fira Code', 'Consolas', monospace" }}
+      {/* Top 5 Duos */}
+      <div className="px-2">
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <span className="text-2xl">🔥</span>
+          <h3 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-violet-400">
+            베스트 케미 TOP 5
+          </h3>
+          <span className="text-2xl">🔥</span>
+        </div>
+        
+        <div className="flex flex-col gap-4">
+          {topDuos.map((duo, i) => (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              key={i}
+              className="flex items-center justify-between p-4 md:p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.06] hover:border-white/20 transition-all relative overflow-hidden"
             >
-              {art}
-            </pre>
-          )}
+              {/* Rank */}
+              <div className="absolute top-0 left-0 bottom-0 w-12 md:w-16 bg-white/[0.02] flex items-center justify-center border-r border-white/5">
+                <span className={`text-xl md:text-2xl font-black ${i === 0 ? 'text-yellow-400 drop-shadow-[0_0_5px_rgba(250,204,21,0.8)]' : 'text-white/20'}`}>
+                  {i + 1}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between w-full pl-16 md:pl-20">
+                {/* Person 1 */}
+                <div className="flex flex-col items-center gap-2 w-20 md:w-24">
+                  <img src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(duo.p1)}&backgroundColor=transparent`} alt="" className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10" />
+                  <span className="text-xs md:text-sm font-bold text-white max-w-[80px] lg:max-w-full truncate text-center">{duo.p1}</span>
+                </div>
+
+                {/* Connection Line */}
+                <div className="flex-1 flex flex-col items-center px-2 md:px-6">
+                  <span className="text-[10px] md:text-xs font-bold text-violet-400 mb-1.5 bg-violet-400/10 px-2 py-0.5 rounded-full border border-violet-400/20">{duo.count}회 상호작용</span>
+                  <div className="w-full flex items-center relative h-6">
+                    <div className="w-2 h-2 rounded-full bg-violet-500/50 absolute left-0" />
+                    <div className="absolute inset-x-2 h-px bg-gradient-to-r from-violet-500/20 via-pink-500/50 to-violet-500/20" />
+                       {/* Animated dot */}
+                       {i === 0 && (
+                         <div className="absolute inset-x-2 h-full overflow-hidden">
+                           <motion.div 
+                             animate={{ x: ['-100%', '1000%'] }} 
+                             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                             className="absolute top-1/2 -translate-y-1/2 w-8 h-px bg-white shadow-[0_0_8px_2px_rgba(255,255,255,0.8)]" 
+                           />
+                         </div>
+                       )}
+                    <div className="w-2 h-2 rounded-full bg-pink-500/50 absolute right-0" />
+                  </div>
+                </div>
+
+                {/* Person 2 */}
+                <div className="flex flex-col items-center gap-2 w-20 md:w-24">
+                  <img src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(duo.p2)}&backgroundColor=transparent`} alt="" className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10" />
+                  <span className="text-xs md:text-sm font-bold text-white max-w-[80px] lg:max-w-full truncate text-center">{duo.p2}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
+
+      {/* Most Mentioned */}
+      {topMentioned.length > 0 && (
+        <div className="mt-8 mb-12">
+          <div className="flex items-center justify-center gap-3 mb-16">
+            <span className="text-2xl">👑</span>
+            <h3 className="text-2xl font-black text-yellow-400 drop-shadow-[0_0_5px_rgba(250,204,21,0.5)]">단톡방의 중심 (인싸 랭킹)</h3>
+            <span className="text-2xl">👑</span>
+          </div>
+
+          <div className="flex items-end justify-center gap-2 md:gap-4 h-56">
+            {[1, 0, 2].map((orderedIndex) => {
+              const user = topMentioned[orderedIndex];
+              if (!user) return <div key={orderedIndex} className="w-24 md:w-32" />; // empty slot
+              
+              const isFirst = orderedIndex === 0;
+              const height = isFirst ? 'h-40' : orderedIndex === 1 ? 'h-32' : 'h-24';
+              const gradient = podiumColors[orderedIndex];
+              const rankStr = isFirst ? '1위' : orderedIndex === 1 ? '2위' : '3위';
+
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + orderedIndex * 0.1 }}
+                  key={user.name}
+                  className="flex flex-col items-center relative w-24 md:w-32"
+                >
+                  {isFirst && <motion.span animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="absolute -top-16 text-4xl drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">👑</motion.span>}
+                  
+                  <div className="flex flex-col items-center gap-2 mb-3 relative z-10">
+                    <div className={`rounded-full bg-white/10 border-2 overflow-hidden shadow-2xl ${isFirst ? 'w-20 h-20 border-yellow-400' : 'w-16 h-16 border-white/20'}`}>
+                      <img src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(user.name)}&backgroundColor=transparent`} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                  
+                  <div className={`w-full ${height} bg-gradient-to-t ${gradient} rounded-t-2xl flex flex-col items-center justify-start pt-4 shadow-[inset_0_5px_15px_rgba(255,255,255,0.2),_0_0_20px_rgba(0,0,0,0.5)] border border-white/10 border-b-0 relative overflow-hidden`}>
+                    <div className="absolute inset-0 bg-white/5" />
+                    <span className="font-black text-white text-lg md:text-xl drop-shadow-md relative z-10">{rankStr}</span>
+                  </div>
+                  
+                  <div className="w-[120%] bg-[#1a1c29] mt-3 py-2 md:py-3 rounded-xl text-center border border-white/10 shadow-lg relative z-20">
+                    <div className="text-[11px] md:text-sm font-bold text-white truncate px-2">{user.name}</div>
+                    <div className="text-[10px] md:text-xs font-medium text-emerald-400 mt-0.5">{user.count}회 언급됨</div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

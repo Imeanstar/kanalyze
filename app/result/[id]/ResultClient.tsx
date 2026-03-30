@@ -360,19 +360,8 @@ export default function ResultClient({ analysis }: ResultClientProps) {
             {activeTab === 'relationship' && (
               <div className="space-y-8">
                 {unlockedTabs.has('relationship') ? (
-                  <div className="bg-[#0f111a] border border-violet-500/30 rounded-3xl p-6 md:p-8 overflow-hidden shadow-2xl relative">
-                    <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6 bg-black/20 -mx-8 -mt-8 px-8 pt-6">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3.5 h-3.5 rounded-full bg-[#ff5f56] shadow-[0_0_10px_#ff5f56]" />
-                        <div className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] shadow-[0_0_10px_#ffbd2e]" />
-                        <div className="w-3.5 h-3.5 rounded-full bg-[#27c93f] shadow-[0_0_10px_#27c93f]" />
-                        <span className="ml-4 text-sm font-mono text-emerald-400 font-bold tracking-wider">root@kanalyze:~/relationship_map.exe</span>
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 pb-4 min-h-[400px]">
-                      <RelationshipGraph edges={data.relationship_map} />
-                    </div>
+                  <div className="bg-[#0a0a14] border border-violet-500/20 rounded-3xl p-2 md:p-4 shadow-[0_0_40px_rgba(139,92,246,0.1)] relative">
+                    <RelationshipGraph members={members} aiSummary={data.relationship_map || ''} />
                   </div>
                 ) : renderLockedOverlay('relationship')}
                 <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
