@@ -366,6 +366,7 @@ export async function POST(req: NextRequest) {
           name: parsed.name || member.name, 
           message_count: member.message_count,
           active_time: member.active_time,
+          mentions: member.mentions,
         };
       } catch (err) {
         console.error(`Member analysis failed for ${member.name}:`, err);
