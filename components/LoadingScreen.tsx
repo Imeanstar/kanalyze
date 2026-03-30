@@ -189,11 +189,9 @@ export default function LoadingScreen({ stage }: LoadingScreenProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="w-full mt-4"
+          className="w-full mt-4 flex justify-center"
         >
-          <div className="flex flex-col items-center gap-2">
-            <AdBanner unit="DAN-pK4q1Pq0rfIGc9hN" width={300} height={250} />
-          </div>
+          <div className="w-12 h-12 border-t-2 border-r-2 border-violet-400 rounded-full animate-spin" />
         </motion.div>
       </div>
     </motion.div>
