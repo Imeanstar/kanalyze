@@ -100,8 +100,10 @@ const MemberShareCard = forwardRef<HTMLDivElement, MemberShareCardProps>(
                 <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>비중</div>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '6px 12px', textAlign: 'center', minWidth: '64px' }}>
-                <div style={{ color: 'white', fontSize: '15px', fontWeight: 900 }}>{totalSpeakers > 0 ? `${totalSpeakers}명` : '-'}</div>
-                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>인원</div>
+                <div style={{ color: member.mbti_guess ? '#fbbf24' : 'white', fontSize: '15px', fontWeight: 900, textTransform: 'uppercase' }}>
+                  {member.mbti_guess ? member.mbti_guess.replace(/[^a-zA-Z]/g, '') : '?'}
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', letterSpacing: '1px', marginTop: '2px' }}>MBTI</div>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '10px', padding: '6px 10px', textAlign: 'center', flex: 1 }}>
                 <div style={{ color: 'white', fontSize: '12px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{member.active_time || '-'}</div>

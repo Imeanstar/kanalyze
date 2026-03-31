@@ -286,6 +286,9 @@ function extractJsonString(rawText: string): any {
       
       const t = extractStringField('title');
       if (t) result.title = t;
+
+      const mbti = extractStringField('mbti_guess');
+      if (mbti) result.mbti_guess = mbti;
       
       const dm = extractStringField('detailed_markdown', true);
       if (dm) result.detailed_markdown = dm;
@@ -370,6 +373,7 @@ export async function POST(req: NextRequest) {
         return {
           ...parsed,
           name: parsed.name || member.name, 
+          mbti_guess: parsed.mbti_guess,
           message_count: member.message_count,
           active_time: member.active_time,
           mentions: member.mentions,

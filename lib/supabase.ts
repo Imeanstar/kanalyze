@@ -18,6 +18,7 @@ export interface MemberAnalysis {
   name: string;
   message_count: number;
   title: string;
+  mbti_guess?: string;
   active_time?: string;
   traits?: Trait[];
   detailed_markdown?: string;

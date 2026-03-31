@@ -22,9 +22,11 @@ export default function UploadZone({
   const [errorMsg, setErrorMsg] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isStartingRef = useRef(false);
 
   const startAnalysis = useCallback(() => {
-    if (!selectedFile) return;
+    if (!selectedFile || isStartingRef.current) return;
+    isStartingRef.current = true;
     
     setErrorMsg('');
     onParsingStart();
@@ -51,6 +53,7 @@ export default function UploadZone({
 
     worker.onerror = (e) => {
       worker.terminate();
+      isStartingRef.current = false;
       const errMsg = `Worker 오류: ${e.message}`;
       setErrorMsg(errMsg);
       onError(errMsg);
