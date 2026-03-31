@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import UploadZone from '@/components/UploadZone';
 import LoadingScreen from '@/components/LoadingScreen';
+import AdBanner from '@/components/AdBanner';
 
 type LoadingStage = 'reading' | 'parsing' | 'analyzing' | 'saving' | 'cached';
 
@@ -171,6 +172,9 @@ export default function HomePage() {
             </span>
           ))}
         </motion.div>
+
+        {/* AdFit Banner */}
+        <AdBanner />
 
         {/* SEO & FAQ Section for AdSense Approval */}
         <div className="max-w-3xl w-full mt-24 space-y-12 text-white/80 bg-white/[0.02] p-8 md:p-12 rounded-3xl border border-white/[0.05]">
